@@ -12,7 +12,7 @@ TEST(ChessTests, GameInitTest) {
 // Testing checkmate recognition
 
 TEST(ChessTests, CheckmateTest) {
-  auto game = std::make_shared<Game>("Br  r  k   q bpp    p   p ppn     P BP   P     Q     RPPPR     K ");
+  auto game = std::make_shared<Game>("r  r  k   q bpp    p   p ppn     P BP   P     Q     RPPPR     K ");
   auto movemaker = std::make_shared<MoveFactory>();
   std::string move_inp = "Qg3xg7";
   ASSERT_TRUE(movemaker->valid(move_inp)) << "In CheckmateTest: valid move format not recognized (Player order?)";
