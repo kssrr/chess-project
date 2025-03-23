@@ -16,8 +16,16 @@ int main(void) {
   while(std::getline(std::cin, input)) {
 
     if (input == ":q") break;
+    
     if (input == ":n") {
       game = std::make_shared<Game>();
+      game->print_board();
+      continue;
+    }
+
+    if (input == ":u") {
+      game->undo();
+      game->swap();
       game->print_board();
       continue;
     }
