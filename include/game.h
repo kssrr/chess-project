@@ -39,5 +39,5 @@ class Game {
   they need to call non-const members like `make_move`. */
   bool checkmate(Player p);
   bool try_move(std::shared_ptr<Move> move);
-  void print_moves(const std::string& input);
+  void print_moves(const std::string& input, const bool char_view=false); // same here
 };

@@ -10,13 +10,14 @@
 #include <vector>
 
 // color codes
-#define WHITE    "\033[1;37m"
-#define BLACK    "\033[1;30m"
-#define GREEN    "\033[1;32m"
-#define RESET    "\033[0m"
-#define PINK_BG  "\033[45m"
-#define CYAN_BG  "\033[46m"
-#define RESET_BG "\033[49m"
+#define WHITE     "\033[1;37m"
+#define BLACK     "\033[1;30m"
+#define GREEN     "\033[1;32m"
+#define RESET     "\033[0m"
+#define PINK_BG   "\033[45m"
+#define CYAN_BG   "\033[46m"
+#define YELLOW_BG "\033[1;43m"
+#define RESET_BG  "\033[49m"
 
 #define CLEAR_SCREEN "\033[H\033[J"
 
@@ -97,7 +98,7 @@ void Game::print_board(bool char_view) const {
   }
   std::cout << GREEN << cols << RESET << '\n';
   std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
-  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
+  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
 
@@ -250,35 +251,41 @@ bool Game::checkmate(Player p) {
   return true;  // keine erlaubten moves
 }
 
-void Game::print_moves(const std::string& input) {
+void Game::print_moves(const std::string& input, const bool char_view) {
+  const std::string cols = "    a  b  c  d  e  f  g  h   ";
+
   char piece_char = input[0];
   Field from(8 - (input[2] - '0'), input[1] - 'a');
-  std::vector<std::vector<char>> printout(8, std::vector<char>(8, ' '));
 
-  for (int row = 0; row < 8; ++row) {
-    for (int col = 0; col < 8; ++col) {
-      Field to(row, col);
-      bool occupied = state_[row][col] ? true : false;
+  std::cout << CLEAR_SCREEN;
+  std::cout << GREEN << cols << RESET << '\n';
+  for (size_t i = 0; i < 8; ++i) {
+    std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
+    for (size_t j = 0; j < 8; ++j) {
+      const auto& ptr = this->state_[i][j];
+      bool occupied = ptr ? true : false;
+      Field to(i, j);
       auto move = std::make_shared<Move>(piece_char, from, to, occupied);
-      bool valid = try_move(move);
+      bool valid = this->try_move(move);
 
-      if (valid && occupied) {
-        printout[row][col] = 'x';
-      } else if (valid && !occupied) {
-        printout[row][col] = 'o';
-      } else if (occupied) {
-        printout[row][col] = state_[row][col]->to_char();
-      }
+      if (valid) 
+        std::cout << YELLOW_BG;
+      else
+        std::cout << ((i + j) % 2 == 0 ? CYAN_BG : PINK_BG);
+
+      if (ptr)
+        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) 
+                  << (char_view ? std::string(1, ptr->to_char()) : ptr->unicode())
+                  << " " << RESET_BG;
+      else
+        std::cout << "   " << RESET_BG;
     }
-  }
 
-  // print this bitch
-
-  for (const auto& row : printout) {
-    for (const auto& c : row) {
-      std::cout << c;
-    }
-    std::cout << '\n';
+    std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
+  std::cout << GREEN << cols << RESET << '\n';
+  std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
+  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
+  std::cout << "\033[43m" << "Input>" << RESET_BG;
 }

@@ -39,6 +39,11 @@ int main(void) {
       continue;
     }
 
+    if (input.rfind(":m", 0) == 0 && input.length() > 2) {  
+      std::string move_input = input.substr(2);
+      game->print_moves(move_input, char_mode);
+    }
+
     if (!movemaker->valid(input)) {
       std::cout << "Invalid format!\n" << "\033[43m" << "Input>" << "\033[49m";;
       continue;
