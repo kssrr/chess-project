@@ -5,9 +5,14 @@
 
 #include "game.h"
 
+#define GREEN "\033[1;32m"
+#define RESET "\033[0m"
+
 int main(void) {
   auto game = std::make_shared<Game>();
   auto movemaker = std::make_unique<MoveFactory>();
+
+  game->print_board(); // show initial state
 
   std::string input;
   
@@ -29,6 +34,8 @@ int main(void) {
     // All good, make move & swap players (next turn):
     game->make_move(move);
     game->swap();
+
+    game -> print_board();
 
     if (game->checkmate(game->to_move())) {
       std::cout << "Checkmate, game over!\n";

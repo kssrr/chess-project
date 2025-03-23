@@ -9,6 +9,14 @@
 #include <string>
 #include <vector>
 
+// color codes
+#define GREEN    "\033[1;32m" // print row & col markers in green
+#define BLUE     "\033[1;34m"
+#define RED      "\033[1;31m"
+#define RESET    "\033[0m"
+#define WHITE_BG "\033[47m"
+#define RESET_BG "\033[49m"
+
 // initial board state if none is provided:
 Board Game::init_board() const {
   Board board(8, std::vector<std::shared_ptr<Piece>>(8, nullptr));
@@ -62,15 +70,27 @@ Game::Game(const std::string& input) {
 Board Game::board() const { return this->state_; }
 
 void Game::print_board() const {
-  for (const auto& row : this->state_) {
-    for (const auto& ptr : row) {
-      if (ptr)
-        std::cout << ptr->to_char();
-      else
-        std::cout << ' ';
+  const std::string cols = "  abcdefgh  ";
+  
+  std::cout << GREEN << cols << RESET << '\n';
+  for (size_t i = 0; i < 8; ++i) {
+    std::cout << GREEN << 8 - i << RESET << ' ';
+
+    for (size_t j = 0; j < 8; ++j) {
+      const auto& ptr = this->state_[i][j];
+      std::cout << ((i+j) % 2 == 0 ? WHITE_BG : RESET_BG);
+
+      if (ptr) {
+        char c = ptr->to_char();
+        std::cout << (std::islower(c) ? BLUE : RED) << c << RESET;
+      } else {
+        std::cout << ' ' << RESET_BG;
+      }
     }
-    std::cout << '\n';
+
+    std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
+  std::cout << GREEN << cols << RESET << '\n';
 }
 
 Player Game::to_move() const { return this->current_player_; }
