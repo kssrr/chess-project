@@ -26,7 +26,7 @@ std::string Piece::unicode() const {
 
 Player Piece::owner() const { return this->player_; }
 
-Bishop::Bishop(Player p) : Piece(p, 'B') { unicode_ = p == Player::White ? 0x2657 : 0x265D; }
+Bishop::Bishop(Player p) : Piece(p, 'B') { unicode_ = 0x265D; }
 
 bool Bishop::valid(std::shared_ptr<Move> move, const Board& board) const {
   Field from = move->from();
@@ -38,7 +38,7 @@ bool Bishop::valid(std::shared_ptr<Move> move, const Board& board) const {
   return (dx == dy) && move->unobstructed(board);  // diagonal move (same vertical and horizontal diff)
 }
 
-King::King(Player p) : Piece(p, 'K') { unicode_ = p == Player::White ? 0x2654 : 0x265A; }
+King::King(Player p) : Piece(p, 'K') { unicode_ = 0x265A; }
 
 bool King::valid(std::shared_ptr<Move> move, const Board& board) const {
   (void)board;  // unused
@@ -49,7 +49,7 @@ bool King::valid(std::shared_ptr<Move> move, const Board& board) const {
   return (std::abs(to.col - from.col) <= 1 && std::abs(to.row - from.row) <= 1);
 }
 
-Knight::Knight(Player p) : Piece(p, 'N') { unicode_ = p == Player::White ? 0x2658 : 0x265E; }
+Knight::Knight(Player p) : Piece(p, 'N') { unicode_ = 0x265E; }
 
 bool Knight::valid(std::shared_ptr<Move> move, const Board& board) const {
   (void)board;  // unused
@@ -63,7 +63,7 @@ bool Knight::valid(std::shared_ptr<Move> move, const Board& board) const {
   return (dx == 2 && dy == 1) || (dx == 1 && dy == 2);
 }
 
-Pawn::Pawn(Player p) : Piece(p, 'P') { unicode_ = p == Player::White ? 0x2659 : 0x265F; }
+Pawn::Pawn(Player p) : Piece(p, 'P') { unicode_ = 0x265F; }
 
 bool Pawn::valid(std::shared_ptr<Move> move, const Board& board) const {
   int direction = (this->owner() == Player::White) ? -1 : 1;
@@ -88,7 +88,7 @@ bool Pawn::valid(std::shared_ptr<Move> move, const Board& board) const {
   return false;
 }
 
-Queen::Queen(Player p) : Piece(p, 'Q') { unicode_ = p == Player::White ? 0x2655 : 0x265B; }
+Queen::Queen(Player p) : Piece(p, 'Q') { unicode_ = 0x265B; }
 
 bool Queen::valid(std::shared_ptr<Move> move, const Board& board) const {
   Field from = move->from();
@@ -100,7 +100,7 @@ bool Queen::valid(std::shared_ptr<Move> move, const Board& board) const {
   return ((dx == dy) || (dx == 0 || dy == 0)) && move->unobstructed(board);
 }
 
-Rook::Rook(Player p) : Piece(p, 'R') { unicode_ = p == Player::White ? 0x2656 : 0x265C; }
+Rook::Rook(Player p) : Piece(p, 'R') { unicode_ = 0x265C; }
 
 bool Rook::valid(std::shared_ptr<Move> move, const Board& board) const {
   Field from = move->from();

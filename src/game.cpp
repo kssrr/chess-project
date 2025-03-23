@@ -10,11 +10,12 @@
 #include <vector>
 
 // color codes
-#define GREEN    "\033[1;32m" // print row & col markers in green
-#define BLUE     "\033[1;34m"
-#define RED      "\033[1;31m"
+#define WHITE    "\033[1;37m"
+#define BLACK    "\033[1;30m"
+#define GREEN    "\033[1;32m"
 #define RESET    "\033[0m"
-#define WHITE_BG "\033[47m"
+#define PINK_BG  "\033[45m"
+#define CYAN_BG  "\033[46m"
 #define RESET_BG "\033[49m"
 
 // initial board state if none is provided:
@@ -70,27 +71,27 @@ Game::Game(const std::string& input) {
 Board Game::board() const { return this->state_; }
 
 void Game::print_board() const {
-  const std::string cols = "  abcdefgh  ";
-  
+  const std::string cols = "    a  b  c  d  e  f  g  h   ";
+
   std::cout << GREEN << cols << RESET << '\n';
   for (size_t i = 0; i < 8; ++i) {
-    std::cout << GREEN << 8 - i << RESET << ' ';
+    std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
     for (size_t j = 0; j < 8; ++j) {
       const auto& ptr = this->state_[i][j];
-      std::cout << ((i+j) % 2 == 0 ? WHITE_BG : RESET_BG);
 
-      if (ptr) {
-        char c = ptr->to_char();
-        std::cout << (std::islower(c) ? BLUE : RED) << c << RESET;
-      } else {
-        std::cout << ' ' << RESET_BG;
-      }
+      std::cout << ((i + j) % 2 == 0 ? CYAN_BG : PINK_BG);
+
+      if (ptr)
+        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) << ptr->unicode() << " " << RESET_BG;
+      else
+        std::cout << "   " << RESET_BG;
     }
 
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
+  std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
 
 Player Game::to_move() const { return this->current_player_; }
