@@ -6,6 +6,8 @@
 #include "pieces.h"
 
 #include <memory>
+#include <locale>
+#include <codecvt>
 
 #include "basics.h"
 #include "move.h"
@@ -16,6 +18,11 @@ Piece::Piece(Player p, char c) : player_(p) {
 }
 
 char Piece::to_char() const { return this->rep_; }
+
+std::string Piece::unicode() const {
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+  return conv.to_bytes(this->unicode_);
+}
 
 Player Piece::owner() const { return this->player_; }
 
