@@ -15,15 +15,22 @@ int main(void) {
   
   while(std::getline(std::cin, input)) {
 
+    if (input == ":q") break;
+    if (input == ":n") {
+      game = std::make_shared<Game>();
+      game->print_board();
+      continue;
+    }
+
     if (!movemaker->valid(input)) {
-      std::cout << "Invalid format!\n";
+      std::cout << "Invalid format!\n" << "\033[43m" << "Input>" << "\033[49m";;
       continue;
     }
 
     auto move = movemaker->parse_move(input);
 
     if (!game->try_move(move)) {
-      std::cout << "That move is not valid!\n";
+      std::cout << "That move is not valid!\n" << "\033[43m" << "Input>" << "\033[49m";
       continue;
     }
 

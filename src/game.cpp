@@ -18,6 +18,8 @@
 #define CYAN_BG  "\033[46m"
 #define RESET_BG "\033[49m"
 
+#define CLEAR_SCREEN "\033[H\033[J"
+
 // initial board state if none is provided:
 Board Game::init_board() const {
   Board board(8, std::vector<std::shared_ptr<Piece>>(8, nullptr));
@@ -73,6 +75,7 @@ Board Game::board() const { return this->state_; }
 void Game::print_board() const {
   const std::string cols = "    a  b  c  d  e  f  g  h   ";
 
+  std::cout << CLEAR_SCREEN;
   std::cout << GREEN << cols << RESET << '\n';
   for (size_t i = 0; i < 8; ++i) {
     std::cout << GREEN << " " << 8 - i << RESET << ' ';
@@ -91,6 +94,8 @@ void Game::print_board() const {
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
+  std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
+  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
 
