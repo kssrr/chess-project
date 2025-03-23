@@ -45,6 +45,8 @@ int main(void) {
       continue;
     }
 
+    // if not recognized as command we try to parse the input as move:
+
     if (!movemaker->valid(input)) {
       std::cout << "Invalid format!\n" << "\033[43m" << "Input>" << "\033[49m";;
       continue;
