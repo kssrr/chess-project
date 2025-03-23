@@ -23,7 +23,7 @@ class Game {
   Game();
   explicit Game(const std::string& input);
   Board init_board() const;
-  void print_board() const;
+  void print_board(bool char_view=false) const;
   Board board() const;
   Player to_move() const;  // returns current player
   void swap();

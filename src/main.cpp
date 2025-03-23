@@ -5,11 +5,13 @@
 
 #include "game.h"
 
+bool char_mode = false;
+
 int main(void) {
   auto game = std::make_shared<Game>();
   auto movemaker = std::make_unique<MoveFactory>();
 
-  game->print_board(); // show initial state
+  game->print_board(char_mode); // show initial state
 
   std::string input;
   
@@ -19,14 +21,21 @@ int main(void) {
     
     if (input == ":n") {
       game = std::make_shared<Game>();
-      game->print_board();
+      if (game->to_move() != Player::White) game->swap();
+      game->print_board(char_mode);
       continue;
     }
 
     if (input == ":u") {
       game->undo();
       game->swap();
-      game->print_board();
+      game->print_board(char_mode);
+      continue;
+    }
+
+    if (input == ":t") {
+      char_mode = !char_mode;
+      game->print_board(char_mode);
       continue;
     }
 
@@ -47,7 +56,7 @@ int main(void) {
     game->make_move(move);
     game->swap();
 
-    game -> print_board();
+    game -> print_board(char_mode);
 
     if (game->checkmate(game->to_move())) {
       std::cout << "Checkmate, game over!\n";

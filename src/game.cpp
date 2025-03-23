@@ -72,7 +72,7 @@ Game::Game(const std::string& input) {
 
 Board Game::board() const { return this->state_; }
 
-void Game::print_board() const {
+void Game::print_board(bool char_view) const {
   const std::string cols = "    a  b  c  d  e  f  g  h   ";
 
   std::cout << CLEAR_SCREEN;
@@ -86,7 +86,9 @@ void Game::print_board() const {
       std::cout << ((i + j) % 2 == 0 ? CYAN_BG : PINK_BG);
 
       if (ptr)
-        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) << ptr->unicode() << " " << RESET_BG;
+        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) 
+                  << (char_view ? std::string(1, ptr->to_char()) : ptr->unicode())
+                  << " " << RESET_BG;
       else
         std::cout << "   " << RESET_BG;
     }
@@ -95,7 +97,7 @@ void Game::print_board() const {
   }
   std::cout << GREEN << cols << RESET << '\n';
   std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
-  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit\n";
+  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
 
