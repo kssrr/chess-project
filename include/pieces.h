@@ -12,10 +12,12 @@ class Piece {
  protected:
   Player player_;
   char rep_;
+  uint32_t unicode_;
 
  public:
   Piece(Player p, char c);
   char to_char() const;
+  std::string unicode() const;
   Player owner() const;
   virtual bool valid(std::shared_ptr<Move> move, const Board& board) const = 0;
 };

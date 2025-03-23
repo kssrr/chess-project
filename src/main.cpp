@@ -5,9 +5,6 @@
 
 #include "game.h"
 
-#define GREEN "\033[1;32m"
-#define RESET "\033[0m"
-
 int main(void) {
   auto game = std::make_shared<Game>();
   auto movemaker = std::make_unique<MoveFactory>();
