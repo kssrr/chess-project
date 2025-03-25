@@ -286,6 +286,6 @@ void Game::print_moves(const std::string& input, const bool char_view) {
   }
   std::cout << GREEN << cols << RESET << '\n';
   std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
-  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
+  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
