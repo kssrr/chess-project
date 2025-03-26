@@ -22,14 +22,14 @@ TEST(ChessTests, MoveFormatTest) {
   std::vector<std::string> invalid_inputs = {"AAAAAAAAAAAH", "Pe2xxxe4", "Pe27e2", "", "\033", "他们甚至无法找到的炸弹客 直到他自己的兄弟把他"};
 
   for (const auto& input : invalid_inputs) {
-    ASSERT_FALSE(movemaker->valid(input));
+    ASSERT_FALSE(movemaker->valid(input)) << "In MoveFormatTest: invalid format not recognized";
   }
 
   // recognize normal move, capture, and promotion?
   std::vector<std::string> valid_inputs = {"Pe2e4", "Nf3xd4", "Pd7d8=P"};
 
   for (const auto& input : valid_inputs) {
-    ASSERT_TRUE(movemaker->valid(input));
+    ASSERT_TRUE(movemaker->valid(input)) << "In MoveFormatTest: valid format not recognized";
   }
 }
 
