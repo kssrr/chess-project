@@ -12,7 +12,7 @@
 #include "basics.h"
 #include "move.h"
 
-Piece::Piece(Player p, char c) : player_(p) {
+Piece::Piece(Player p, char c) : player_(p), carries_bomb_(false) {
   this->rep_ = (this->player_ == Player::White) ? std::toupper(c) : std::tolower(c);
   this->unicode_ = 0;
 }
@@ -25,6 +25,10 @@ std::string Piece::unicode() const {
 }
 
 Player Piece::owner() const { return this->player_; }
+
+bool Piece::carries_bomb() const { return this->carries_bomb_; }
+
+void Piece::give_bomb() { this->carries_bomb_ = true; }
 
 Bishop::Bishop(Player p) : Piece(p, 'B') { unicode_ = 0x265D; }
 

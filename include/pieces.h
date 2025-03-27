@@ -13,6 +13,7 @@ class Piece {
   Player player_;
   char rep_;
   uint32_t unicode_;
+  bool carries_bomb_; // for beirut variant
 
  public:
   Piece(Player p, char c);
@@ -20,6 +21,9 @@ class Piece {
   std::string unicode() const;
   Player owner() const;
   virtual bool valid(std::shared_ptr<Move> move, const Board& board) const = 0;
+  // for beirut variant:
+  bool carries_bomb() const;
+  void give_bomb();
 };
 
 class Bishop : public Piece {

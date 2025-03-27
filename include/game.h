@@ -11,6 +11,7 @@
 #include "./pieces.h"
 
 class Game {
+ protected:
   // a game state includes the board state, and the positions of the kings:
   using GameState = std::pair<Board, std::map<Player, Field>>;
 
@@ -24,6 +25,7 @@ class Game {
   explicit Game(const std::string& input);
   Board init_board() const;
   void print_board(bool char_view=false) const;
+  void show(bool char_view=false) const;
   Board board() const;
   Player to_move() const;  // returns current player
   void swap();

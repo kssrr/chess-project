@@ -97,6 +97,11 @@ void Game::print_board(bool char_view) const {
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
+}
+
+void Game::show(bool char_view) const {
+  // board, player status, commands & input prompt:
+  this->print_board(char_view);
   std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
   std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
