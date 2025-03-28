@@ -7,13 +7,13 @@
 
 bool char_mode = false;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
   // Set gamemode & other setup:
   bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
 
   auto game = std::make_shared<Game>();
-  
+
   if (beirut) {
     game->enable_beirut_mode();
     game->get_bomber(Player::White);
@@ -26,14 +26,16 @@ int main(int argc, char** argv) {
 
   // main loop:
   std::string input;
-  
-  while(std::getline(std::cin, input)) {
 
-    if (input == ":q") break;
-    
+  while (std::getline(std::cin, input)) {
+
+    if (input == ":q")
+      break;
+
     if (input == ":n") {
       game = std::make_shared<Game>();
-      if (game->to_move() != Player::White) game->swap();
+      if (game->to_move() != Player::White)
+        game->swap();
 
       if (beirut) {
         game->enable_beirut_mode();
@@ -57,7 +59,7 @@ int main(int argc, char** argv) {
       continue;
     }
 
-    if (input.rfind(":m", 0) == 0 && input.length() > 2) {  
+    if (input.rfind(":m", 0) == 0 && input.length() > 2) {
       std::string move_input = input.substr(2);
       game->print_moves(move_input, char_mode);
       continue;
@@ -66,15 +68,16 @@ int main(int argc, char** argv) {
     if (input == "boom") {
       if (beirut) {
         game->boom(game->to_move());
-        
+
         // player could accidentally checkmate themselves with bomb:
         if (game->checkmate(game->to_move())) {
           std::cout << "You blew up your own king you retard\n";
           break;
         }
 
-        game->swap(); // no good, swaps also when boom is called without bomber...
-        
+        game->swap(); // no good, swaps also when boom is called without
+                      // bomber...
+
         if (game->checkmate(game->to_move())) {
           std::cout << "Checkmate, game over\n";
           break;
@@ -88,17 +91,19 @@ int main(int argc, char** argv) {
     // if not recognized as command we try to parse the input as move:
 
     if (!movemaker->valid(input)) {
-      std::cout << "Invalid format!\n" << "\033[43m" << "Input>" << "\033[49m";;
+      std::cout << "Invalid format!\n"
+                << "\033[43m" << "Input>" << "\033[49m";
+      ;
       continue;
     }
 
     auto move = movemaker->parse_move(input);
 
     if (!game->try_move(move)) {
-      std::cout << "That move is not valid!\n" << "\033[43m" << "Input>" << "\033[49m";
+      std::cout << "That move is not valid!\n"
+                << "\033[43m" << "Input>" << "\033[49m";
       continue;
     }
-
 
     // All good, make move & swap players (next turn):
     game->make_move(move);
@@ -109,7 +114,7 @@ int main(int argc, char** argv) {
       break;
     };
 
-    game -> show(char_mode);
+    game->show(char_mode);
   }
 
   return EXIT_SUCCESS;
