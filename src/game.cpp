@@ -8,6 +8,9 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <regex>
+#include <thread>
 
 // color codes
 #define WHITE     "\033[1;37m"
@@ -17,6 +20,7 @@
 #define PINK_BG   "\033[45m"
 #define CYAN_BG   "\033[46m"
 #define YELLOW_BG "\033[1;43m"
+#define RED_BG    "\033[1;41m"
 #define RESET_BG  "\033[49m"
 
 #define CLEAR_SCREEN "\033[H\033[J"
@@ -294,3 +298,115 @@ void Game::print_moves(const std::string& input, const bool char_view) {
   std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
   std::cout << "\033[43m" << "Input>" << RESET_BG;
 }
+
+// Beirut-mode specifics
+
+bool Game::beirut_mode() const { return this->beirut_mode_; }
+
+void Game::enable_beirut_mode() { this->beirut_mode_ = true; }
+
+void Game::get_bomber(Player p, bool char_view) const {
+  // collect player inputs & give bombs to the pieces
+  this->print_board(char_view);
+
+  std::regex valid_regex(p == Player::White ? "^[BNPQR][a-h][1-2]$" : "^[bnpqr][a-h][7-8]$"); // no king allowed
+  std::string input;
+
+  std::cout << (p == Player::White ? "White" : "Black") << "'s suicide bomber:>";
+
+  while(std::getline(std::cin, input)) {
+
+    if (!std::regex_match(input, valid_regex)) {
+      std::cout << "Invalid format; enter a piece belonging to you followed by a field.\n>";
+      continue;
+    }
+
+    // here, deparse the input into piece and field, check if the piece is at the field.
+    // If not, get new input. If it is, give bomb to piece.
+    char piece_char = input[0];
+    Field location(8 - (input[2] - '0'), input[1] - 'a');
+
+    auto ptr = this->state_[location.row][location.col];
+
+    if (!ptr) {
+      std::cout << "No piece at that location, try again\n>";
+      continue;
+    }
+
+    if (ptr->to_char() != piece_char) {
+      std::cout << "That is not the piece at the location, that piece is " << ptr->to_char() << ". Try again\n>";
+      continue;
+    }
+
+    ptr->give_bomb();
+    break;
+  }
+}
+
+void Game::boom(Player p) {
+  // try to find player's bomb carrier:
+  bool found = false;
+  size_t brow, bcol;
+
+  for (size_t i = 0; i < 8; ++i) {
+    for (size_t j = 0; j < 8; ++j) {
+      auto ptr = this->state_[i][j];
+
+      if (!ptr) continue;
+
+      if (ptr->carries_bomb() && ptr->owner() == p) {
+        found = true;
+        brow = i;
+        bcol = j;
+        break;
+      }
+    }
+  }
+
+  // if not found, print message to stdout and exit function.
+  if (!found) {
+    std::cout << "No bomb carrier for player " << (p == Player::White ? "white" : "black") << '\n';
+    return;
+  }
+
+  // "detonate bomb"; delete 3x3 window around carrier:
+  for (size_t i = brow - 1; i < brow + 1; ++i) {
+    for (size_t j = bcol - 1; j < bcol + 1; ++j) {
+      this->state_[i][j] = nullptr;
+    }
+  }
+
+  // trigger explosion effect:
+  this->explosion_effect(brow, bcol);
+};
+
+// basically print_board with different colors:
+void Game::explosion_effect(size_t r, size_t c, bool char_view) const {
+  const std::string cols = "    a  b  c  d  e  f  g  h   ";
+
+  std::cout << CLEAR_SCREEN;
+  std::cout << GREEN << cols << RESET << '\n';
+  for (size_t i = 0; i < 8; ++i) {
+    std::cout << GREEN << " " << 8 - i << RESET << ' ';
+
+    for (size_t j = 0; j < 8; ++j) {
+      const auto& ptr = this->state_[i][j];
+
+      // if within radius make red, else make yellow
+      std::cout << (((i >= r - 1) && (i <= r + 1)) && ((j >= c - 1) && (j <= c + 1)) ? RED_BG : YELLOW_BG);
+
+      if (ptr)
+        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) 
+                  << (char_view ? std::string(1, ptr->to_char()) : ptr->unicode())
+                  << " " << RESET_BG;
+      else
+        std::cout << "   " << RESET_BG;
+    }
+
+    std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
+  }
+
+  // show for half a second then delegate back & show normal board again:
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  this->print_board();
+};

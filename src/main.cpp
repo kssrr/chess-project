@@ -7,12 +7,21 @@
 
 bool char_mode = false;
 
-int main(void) {
+int main(int argc, char** argv) {
+
+  // Set gamemode & other setup:
+  bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
+
   auto game = std::make_shared<Game>();
+
+  if (beirut)
+    game->enable_beirut_mode();
+
   auto movemaker = std::make_unique<MoveFactory>();
 
   game->show(char_mode); // show initial state
 
+  // main loop:
   std::string input;
   
   while(std::getline(std::cin, input)) {
@@ -43,6 +52,15 @@ int main(void) {
       std::string move_input = input.substr(2);
       game->print_moves(move_input, char_mode);
       continue;
+    }
+
+    if (input == "boom") {
+      if (beirut) {
+        game->boom(game->to_move());
+        game->swap(); // no good, swaps also when boom is called without bomber...
+        game->show();
+        continue;
+      }
     }
 
     // if not recognized as command we try to parse the input as move:
