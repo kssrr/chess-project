@@ -4,6 +4,7 @@
 
 #include "game.h"
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -370,8 +371,8 @@ void Game::boom(Player p) {
   }
 
   // "detonate bomb"; delete 3x3 window around carrier:
-  for (size_t i = brow - 1; i < brow + 1; ++i) {
-    for (size_t j = bcol - 1; j < bcol + 1; ++j) {
+  for (int i = std::max(0, static_cast<int>(brow) - 1); i <= std::min(7, static_cast<int>(brow) + 1); ++i) {
+    for (int j = std::max(0, static_cast<int>(bcol) - 1); j <= std::min(7, static_cast<int>(bcol) + 1); ++j) {
       this->state_[i][j] = nullptr;
     }
   }

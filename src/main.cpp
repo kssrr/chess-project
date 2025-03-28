@@ -14,8 +14,11 @@ int main(int argc, char** argv) {
 
   auto game = std::make_shared<Game>();
 
-  if (beirut)
+  if (beirut) {
     game->enable_beirut_mode();
+    game->get_bomber(Player::White);
+    game->get_bomber(Player::Black);
+  }
 
   auto movemaker = std::make_unique<MoveFactory>();
 
@@ -31,6 +34,12 @@ int main(int argc, char** argv) {
     if (input == ":n") {
       game = std::make_shared<Game>();
       if (game->to_move() != Player::White) game->swap();
+
+      if (beirut) {
+        game->enable_beirut_mode();
+        game->get_bomber(Player::White);
+        game->get_bomber(Player::Black);
+      }
       game->show(char_mode);
       continue;
     }
