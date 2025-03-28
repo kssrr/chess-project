@@ -14,17 +14,16 @@
 
 // from string input
 Move::Move(const std::string &input)
-    : piece_char_(input[0]), captures_(input[3] == 'x'),
+    : piece_char_(input[0]),
+      captures_(input[3] == 'x'),
       from_(8 - (input[2] - '0'), input[1] - 'a'),
-      to_(captures_ ? 8 - (input[5] - '0') : 8 - (input[4] - '0'),
-          captures_ ? input[4] - 'a' : input[3] - 'a'),
+      to_(captures_ ? 8 - (input[5] - '0') : 8 - (input[4] - '0'), captures_ ? input[4] - 'a' : input[3] - 'a'),
       promotion_(input.size() > 6 && input[input.size() - 2] == '='),
       promote_to_(promotion_ ? input[input.size() - 1] : '\0') {}
 
 // alternativ: moves zum ausprobieren aus Spielzustand generieren:
 Move::Move(char piece_char, Field from, Field to, bool captures)
-    : piece_char_(piece_char), captures_(captures), from_(from), to_(to),
-      promotion_(false), promote_to_('\0') {}
+    : piece_char_(piece_char), captures_(captures), from_(from), to_(to), promotion_(false), promote_to_('\0') {}
 
 char Move::piece_char() const { return piece_char_; }
 
@@ -51,25 +50,18 @@ bool Move::unobstructed(const Board &board) const {
   int col = o_col + col_step;
 
   while (row != d_row || col != d_col) {
-    if (board[row][col])
-      return false;
+    if (board[row][col]) return false;
     row += row_step;
     col += col_step;
   }
 
-  return true; // no obstructions found
+  return true;  // no obstructions found
 }
 
 // Move factory
 
-MoveFactory::MoveFactory()
-    : move_format_("^[BKNPQRbknpqr][a-h][1-8]x?[a-h][1-8](=[BKNPQRbknpqr])?$") {
-}
+MoveFactory::MoveFactory() : move_format_("^[BKNPQRbknpqr][a-h][1-8]x?[a-h][1-8](=[BKNPQRbknpqr])?$") {}
 
-bool MoveFactory::valid(const std::string &input) const {
-  return std::regex_match(input, move_format_);
-}
+bool MoveFactory::valid(const std::string &input) const { return std::regex_match(input, move_format_); }
 
-std::shared_ptr<Move> MoveFactory::parse_move(const std::string &input) const {
-  return std::make_shared<Move>(input);
-}
+std::shared_ptr<Move> MoveFactory::parse_move(const std::string &input) const { return std::make_shared<Move>(input); }

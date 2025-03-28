@@ -8,7 +8,6 @@
 bool char_mode = false;
 
 int main(int argc, char **argv) {
-
   // Set gamemode & other setup:
   bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
 
@@ -22,20 +21,17 @@ int main(int argc, char **argv) {
 
   auto movemaker = std::make_unique<MoveFactory>();
 
-  game->show(char_mode); // show initial state
+  game->show(char_mode);  // show initial state
 
   // main loop:
   std::string input;
 
   while (std::getline(std::cin, input)) {
-
-    if (input == ":q")
-      break;
+    if (input == ":q") break;
 
     if (input == ":n") {
       game = std::make_shared<Game>();
-      if (game->to_move() != Player::White)
-        game->swap();
+      if (game->to_move() != Player::White) game->swap();
 
       if (beirut) {
         game->enable_beirut_mode();
@@ -75,8 +71,8 @@ int main(int argc, char **argv) {
           break;
         }
 
-        game->swap(); // no good, swaps also when boom is called without
-                      // bomber...
+        game->swap();  // no good, swaps also when boom is called without
+                       // bomber...
 
         if (game->checkmate(game->to_move())) {
           std::cout << "Checkmate, game over\n";

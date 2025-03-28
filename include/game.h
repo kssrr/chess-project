@@ -16,15 +16,15 @@ class Game {
   Player current_player_;
   bool beirut_mode_;
 
-public:
+ public:
   Game();
-  virtual ~Game() = default; // needed to make polymorphic (?)
+  virtual ~Game() = default;  // needed to make polymorphic (?)
   explicit Game(const std::string &input);
   Board init_board() const;
   void print_board(bool char_view = false) const;
   void show(bool char_view = false) const;
   Board board() const;
-  Player to_move() const; // returns current player
+  Player to_move() const;  // returns current player
   void swap();
   void make_move(std::shared_ptr<Move> move);
   void undo();
@@ -39,7 +39,7 @@ public:
   bool checkmate(Player p);
   bool try_move(std::shared_ptr<Move> move);
   void print_moves(const std::string &input,
-                   const bool char_view = false); // same here
+                   const bool char_view = false);  // same here
 
   // Beirut-variant specific:
   bool beirut_mode() const;

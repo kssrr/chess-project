@@ -13,7 +13,7 @@ class Move {
   bool promotion_;
   char promote_to_;
 
-public:
+ public:
   explicit Move(const std::string &input);
   // alternate constructor to generate hypothetical moves:
   Move(char piece_char, Field from, Field to, bool captures);
@@ -30,7 +30,7 @@ public:
 class MoveFactory {
   std::regex move_format_;
 
-public:
+ public:
   MoveFactory();
   bool valid(const std::string &input) const;
   std::shared_ptr<Move> parse_move(const std::string &input) const;

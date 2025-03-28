@@ -14,8 +14,7 @@
 #include "move.h"
 
 Piece::Piece(Player p, char c) : player_(p), carries_bomb_(false) {
-  this->rep_ =
-      (this->player_ == Player::White) ? std::toupper(c) : std::tolower(c);
+  this->rep_ = (this->player_ == Player::White) ? std::toupper(c) : std::tolower(c);
   this->unicode_ = 0;
 }
 
@@ -41,15 +40,13 @@ bool Bishop::valid(std::shared_ptr<Move> move, const Board &board) const {
   int dx = std::abs(to.col - from.col);
   int dy = std::abs(to.row - from.row);
 
-  return (dx == dy) &&
-         move->unobstructed(
-             board); // diagonal move (same vertical and horizontal diff)
+  return (dx == dy) && move->unobstructed(board);  // diagonal move (same vertical and horizontal diff)
 }
 
 King::King(Player p) : Piece(p, 'K') { unicode_ = 0x265A; }
 
 bool King::valid(std::shared_ptr<Move> move, const Board &board) const {
-  (void)board; // unused
+  (void)board;  // unused
 
   Field from = move->from();
   Field to = move->to();
@@ -60,7 +57,7 @@ bool King::valid(std::shared_ptr<Move> move, const Board &board) const {
 Knight::Knight(Player p) : Piece(p, 'N') { unicode_ = 0x265E; }
 
 bool Knight::valid(std::shared_ptr<Move> move, const Board &board) const {
-  (void)board; // unused
+  (void)board;  // unused
 
   Field from = move->from();
   Field to = move->to();
@@ -83,19 +80,15 @@ bool Pawn::valid(std::shared_ptr<Move> move, const Board &board) const {
   int dy = to.row - from.row;
 
   // single move forward:
-  if (dx == 0 && dy == direction && !board[to.row][to.col])
-    return true;
+  if (dx == 0 && dy == direction && !board[to.row][to.col]) return true;
 
   // double move forward (only from starting position):
   int start_row = (this->owner() == Player::White) ? 6 : 1;
-  if (dx == 0 && dy == 2 * direction && from.row == start_row &&
-      !board[to.row][to.col] && move->unobstructed(board))
+  if (dx == 0 && dy == 2 * direction && from.row == start_row && !board[to.row][to.col] && move->unobstructed(board))
     return true;
 
   // capture (diagonally):
-  if (std::abs(dx) == 1 && dy == direction && move->has_capture() &&
-      board[to.row][to.col])
-    return true;
+  if (std::abs(dx) == 1 && dy == direction && move->has_capture() && board[to.row][to.col]) return true;
 
   return false;
 }
