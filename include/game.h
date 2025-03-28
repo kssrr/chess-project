@@ -46,5 +46,5 @@ class Game {
   void get_bomber(Player p, bool char_view=false) const;
   // ^ view mode necessary because we show the board for picking a bomber
   void boom(Player p);
-  void explosion_effect(size_t r, size_t c, bool char_view=false) const;
+  void explosion_effect(int r, int c, bool char_view=false) const;
 };

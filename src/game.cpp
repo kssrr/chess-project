@@ -367,10 +367,10 @@ void Game::get_bomber(Player p, bool char_view) const {
 void Game::boom(Player p) {
   // try to find player's bomb carrier:
   bool found = false;
-  size_t brow, bcol;
+  int brow, bcol;
 
-  for (size_t i = 0; i < 8; ++i) {
-    for (size_t j = 0; j < 8; ++j) {
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 0; j < 8; ++j) {
       auto ptr = this->state_[i][j];
 
       if (!ptr) continue;
@@ -391,8 +391,8 @@ void Game::boom(Player p) {
   }
 
   // "detonate bomb"; delete 3x3 window around carrier:
-  for (int i = std::max(0, static_cast<int>(brow) - 1); i <= std::min(7, static_cast<int>(brow) + 1); ++i) {
-    for (int j = std::max(0, static_cast<int>(bcol) - 1); j <= std::min(7, static_cast<int>(bcol) + 1); ++j) {
+  for (int i = std::max(0, brow - 1); i <= std::min(7, brow + 1); ++i) {
+    for (int j = std::max(0, bcol - 1); j <= std::min(7, bcol + 1); ++j) {
       this->state_[i][j] = nullptr;
     }
   }
@@ -402,24 +402,23 @@ void Game::boom(Player p) {
 };
 
 // basically print_board with different colors:
-void Game::explosion_effect(size_t r, size_t c, bool char_view) const {
+void Game::explosion_effect(int r, int c, bool char_view) const {
   const std::string cols = "    a  b  c  d  e  f  g  h   ";
 
   std::cout << CLEAR_SCREEN;
   std::cout << GREEN << cols << RESET << '\n';
-  for (size_t i = 0; i < 8; ++i) {
+  for (int i = 0; i < 8; ++i) {
     std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
-    for (size_t j = 0; j < 8; ++j) {
+    for (int j = 0; j < 8; ++j) {
       const auto& ptr = this->state_[i][j];
 
       // if within radius make red, else make yellow
-      std::cout << (((i >= r - 1) && (i <= r + 1)) && ((j >= c - 1) && (j <= c + 1)) ? RED_BG : YELLOW_BG);
+      // TODO: there is a small bug here, because r+/-1 or c +/- 1 might be out of bounds, so we get no red
+      std::cout << (((i >= std::max(0, r - 1)) && (i <= std::min(7, r + 1))) && ((j >= std::max(0, c - 1)) && (j <= std::min(7, c + 1))) ? RED_BG : YELLOW_BG);
 
       if (ptr)
-        std::cout << " " << (ptr->owner() == Player::Black ? BLACK : WHITE) 
-                  << (char_view ? std::string(1, ptr->to_char()) : ptr->unicode())
-                  << " " << RESET_BG;
+        std::cout << " " << WHITE << (char_view ? std::string(1, ptr->to_char()) : ptr->unicode()) << " " << RESET_BG;
       else
         std::cout << "   " << RESET_BG;
     }
