@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
 
   auto game = std::make_shared<Game>();
-
+  
   if (beirut) {
     game->enable_beirut_mode();
     game->get_bomber(Player::White);
@@ -28,11 +28,6 @@ int main(int argc, char** argv) {
   std::string input;
   
   while(std::getline(std::cin, input)) {
-
-    if (game->checkmate(game->to_move())) {
-      std::cout << "Checkmate, game over!\n";
-      break;
-    }
 
     if (input == ":q") break;
     
@@ -71,7 +66,20 @@ int main(int argc, char** argv) {
     if (input == "boom") {
       if (beirut) {
         game->boom(game->to_move());
+        
+        // player could accidentally checkmate themselves with bomb:
+        if (game->checkmate(game->to_move())) {
+          std::cout << "You blew up your own king you retard\n";
+          break;
+        }
+
         game->swap(); // no good, swaps also when boom is called without bomber...
+        
+        if (game->checkmate(game->to_move())) {
+          std::cout << "Checkmate, game over\n";
+          break;
+        }
+
         game->show();
         continue;
       }
@@ -95,6 +103,11 @@ int main(int argc, char** argv) {
     // All good, make move & swap players (next turn):
     game->make_move(move);
     game->swap();
+
+    if (game->checkmate(game->to_move())) {
+      std::cout << "Checkmate, game over\n";
+      break;
+    };
 
     game -> show(char_mode);
   }

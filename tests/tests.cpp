@@ -66,6 +66,10 @@ TEST(ChessTests, CheckmateTest) {
   game->make_move(move);
   game->swap();
   ASSERT_TRUE(game->checkmate(game->to_move())) << "In CheckmateTest: checkmate not recognized";
+
+  //checkmate after explosion (no king on board):
+  auto game2 = std::make_unique<Game>("r  r  k   q bpp    p   p ppn     P BP   P     Q     RPPPR       ");
+  ASSERT_TRUE(game->checkmate(Player::White)) << "In CheckmateTest: checkmate by missing king not recognized";
 }
 
 // Check recognition

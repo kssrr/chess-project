@@ -195,8 +195,9 @@ Field Game::kingpos(Player p) const {
 
       if (!ptr) continue;
 
-      if (ptr->to_char() == c)
+      if (ptr->to_char() == c) {
         return Field(i, j);
+      }
     }
   }
 
@@ -245,14 +246,14 @@ bool Game::checkmate(Player p) {
   /*
   This first check is neccessitated by the Beirut-variant, where
   the king might be "blown up" without prior check, and thus may
-  simply "disappear" from the game's POV. If the kingfield is not valid
+  simply "disappear" from the game's view. If the kingfield is not valid
   (empty field returned by kingpos = could not find king) the player has
   lost their king in an explosion. 
   */
-  //Field king = kingpos(p);
-  //if (!king.valid()) return true;
+  Field king = kingpos(p);
+  if (!king.valid()) return true;
 
-  // and then from here we proceed normally
+  // and then from here we proceed "normally"
   if (!in_check(p)) return false;  // cannot be checkmate if not in check
 
   // alle Figuren des Spielers finden:
