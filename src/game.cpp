@@ -2,6 +2,11 @@
    of this program. It can start a new game, or read board status from a file.
    The actual game logic is handled in this class. */
 
+// TODO: adapt checkmate to understand checkmate by blowing up
+// for example, in `boom` check for the king in the radius & 
+// if he blows up invalidate the king's position (-1, -1)?
+// Then check if a kings position is valid in check & checkmate?
+
 #include "game.h"
 
 #include <algorithm>
@@ -52,7 +57,7 @@ Board Game::init_board() const {
 
 /* Next to initializing the board we also keep track of the kings' positions.
    This means we won't have to look for them later if we test check & checkmate. */
-Game::Game() : state_(init_board()) { kings_ = {{Player::White, {7, 4}}, {Player::Black, {0, 4}}}; }
+Game::Game() : state_(init_board()) {}
 
 // Initializing a game from a provided board state
 Game::Game(const std::string& input) {
@@ -64,12 +69,7 @@ Game::Game(const std::string& input) {
     int row = i / 8;
     int col = i % 8;
 
-    if (c != ' ') {
-      board[row][col] = piecemaker.make_piece(c);
-
-      if (c == 'k') kings_[Player::Black] = Field(row, col);
-      if (c == 'K') kings_[Player::White] = Field(row, col);
-    }
+    if (c != ' ') board[row][col] = piecemaker.make_piece(c);
   }
 
   state_ = board;
@@ -120,7 +120,7 @@ void Game::swap() {
 }
 
 void Game::make_move(std::shared_ptr<Move> move) {
-  history_.push({state_, kings_});
+  history_.push(state_);
 
   Field from = move->from();
   Field to = move->to();
@@ -133,21 +133,13 @@ void Game::make_move(std::shared_ptr<Move> move) {
     auto piecemaker = std::make_unique<PieceFactory>();
     this->state_[to.row][to.col] = piecemaker->make_piece(move->promote_to());
   }
-
-  // keep track of the king if he moves:
-  if (std::tolower(move->piece_char()) == 'k') {
-    Player owner = std::isupper(move->piece_char()) ? Player::White : Player::Black;
-    kings_[owner] = {to.row, to.col};
-  }
 }
 
 void Game::undo() {
-  auto [prev_state, prev_kings] = history_.top();
+  auto prev_state = history_.top();
   history_.pop();
 
   state_ = prev_state;
-  kings_ = prev_kings;
-  // swap();
 }
 
 bool Game::substantively_valid(std::shared_ptr<Move> move, bool threat_check = false) const {
@@ -193,7 +185,23 @@ bool Game::substantively_valid(std::shared_ptr<Move> move, bool threat_check = f
   return true;  // If none of the above conditions failed, the move is valid
 }
 
-Field Game::kingpos(Player p) const { return kings_.at(p); }
+Field Game::kingpos(Player p) const {
+  char c = (p == Player::White ? 'K' : 'k');
+
+  // find the king
+  for (int i = 0; i < 8; ++i) {
+    for (int j = 0; j < 8; ++j) {
+      auto ptr = state_[i][j];
+
+      if (!ptr) continue;
+
+      if (ptr->to_char() == c)
+        return Field(i, j);
+    }
+  }
+
+  return Field(); // return default (invalid) field by default
+}
 
 bool Game::in_check(Player p) const {
   Field king_field = kingpos(p);
@@ -234,6 +242,17 @@ bool Game::try_move(std::shared_ptr<Move> move) {
 
 // Dumme brute-force Lösung für Schachmatt
 bool Game::checkmate(Player p) {
+  /*
+  This first check is neccessitated by the Beirut-variant, where
+  the king might be "blown up" without prior check, and thus may
+  simply "disappear" from the game's POV. If the kingfield is not valid
+  (empty field returned by kingpos = could not find king) the player has
+  lost their king in an explosion. 
+  */
+  //Field king = kingpos(p);
+  //if (!king.valid()) return true;
+
+  // and then from here we proceed normally
   if (!in_check(p)) return false;  // cannot be checkmate if not in check
 
   // alle Figuren des Spielers finden:

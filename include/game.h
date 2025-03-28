@@ -11,13 +11,9 @@
 #include "./pieces.h"
 
 class Game {
-  // a game state includes the board state, and the positions of the kings:
-  using GameState = std::pair<Board, std::map<Player, Field>>;
-
   Board state_;
-  std::stack<GameState> history_;
+  std::stack<Board> history_;
   Player current_player_;
-  std::map<Player, Field> kings_;  // keeping track of the kings' positions
   bool beirut_mode_;
 
  public:

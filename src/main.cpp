@@ -29,6 +29,11 @@ int main(int argc, char** argv) {
   
   while(std::getline(std::cin, input)) {
 
+    if (game->checkmate(game->to_move())) {
+      std::cout << "Checkmate, game over!\n";
+      break;
+    }
+
     if (input == ":q") break;
     
     if (input == ":n") {
@@ -92,10 +97,6 @@ int main(int argc, char** argv) {
     game->swap();
 
     game -> show(char_mode);
-
-    if (game->checkmate(game->to_move())) {
-      std::cout << "Checkmate, game over!\n";
-    }
   }
 
   return EXIT_SUCCESS;
