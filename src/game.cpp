@@ -395,6 +395,8 @@ bool Game::boom(Player p) {
     return found;
   }
 
+  this->history_.push(this->state_);
+
   // "detonate bomb"; delete 3x3 window around carrier:
   for (int i = std::max(0, brow - 1); i <= std::min(7, brow + 1); ++i) {
     for (int j = std::max(0, bcol - 1); j <= std::min(7, bcol + 1); ++j) {
