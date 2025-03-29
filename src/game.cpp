@@ -107,8 +107,8 @@ void Game::print_board(bool char_view) const {
 void Game::show(bool char_view) const {
   // board, player status, commands & input prompt:
   print_board(char_view);
-  std::cout << (in_check(to_move()) ? "CHECK! " : "")
-            << (to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+  std::cout << (in_check(to_move()) ? "CHECK! " : "") << (to_move() == Player::White ? "White" : "Black")
+            << "'s turn.\n"
             << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
             << "\033[43m" << "Input>" << RESET_BG;
 }
@@ -116,8 +116,7 @@ void Game::show(bool char_view) const {
 Player Game::to_move() const { return current_player_; }
 
 void Game::swap() {
-  current_player_ == Player::White ? current_player_ = Player::Black
-                                         : current_player_ = Player::White;
+  current_player_ == Player::White ? current_player_ = Player::Black : current_player_ = Player::White;
 }
 
 void Game::make_move(std::shared_ptr<Move> move) {
@@ -319,8 +318,8 @@ void Game::print_moves(const std::string &input, const bool char_view) {
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
-  std::cout << (in_check(to_move()) ? "CHECK! " : "")
-            << (to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+  std::cout << (in_check(to_move()) ? "CHECK! " : "") << (to_move() == Player::White ? "White" : "Black")
+            << "'s turn.\n"
             << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
             << "\033[43m" << "Input>" << RESET_BG;
 }

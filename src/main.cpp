@@ -5,16 +5,13 @@
 
 #include "game.h"
 
-void show_prompt() {
-  std::cout << "\033[43m" << "Input>" << "\033[49m";
-}
+void show_prompt() { std::cout << "\033[43m" << "Input>" << "\033[49m"; }
 
 void play(std::shared_ptr<Game> game, std::shared_ptr<MoveFactory> movemaker, bool char_mode) {
   bool beirut = game->beirut_mode();
   std::string input;
 
   while (std::getline(std::cin, input)) {
-
     // First check if the input matches any command:
 
     if (input == ":q") break;
@@ -52,7 +49,6 @@ void play(std::shared_ptr<Game> game, std::shared_ptr<MoveFactory> movemaker, bo
     }
 
     if (input == "boom") {
-
       if (!beirut) {
         show_prompt();
         continue;
@@ -113,9 +109,8 @@ void play(std::shared_ptr<Game> game, std::shared_ptr<MoveFactory> movemaker, bo
 }
 
 int main(int argc, char **argv) {
-
   // Set gamemode & other setup:
-  bool char_mode = false; // by default, try to show board with unicode piece chars
+  bool char_mode = false;  // by default, try to show board with unicode piece chars
   bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
   auto game = std::make_shared<Game>();
 
@@ -125,7 +120,7 @@ int main(int argc, char **argv) {
     game->get_bomber(Player::Black);
   }
 
-  auto movemaker = std::make_shared<MoveFactory>(); // validates move inputs
+  auto movemaker = std::make_shared<MoveFactory>();  // validates move inputs
 
   game->show(char_mode);  // show initial state
 
