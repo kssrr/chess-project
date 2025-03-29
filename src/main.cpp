@@ -9,24 +9,8 @@ void show_prompt() {
   std::cout << "\033[43m" << "Input>" << "\033[49m";
 }
 
-int main(int argc, char **argv) {
-
-  // Set gamemode & other setup:
-  bool char_mode = false; // by default, try to show board with unicode piece chars
-  bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
-  auto game = std::make_shared<Game>();
-
-  if (beirut) {
-    game->enable_beirut_mode();
-    game->get_bomber(Player::White);
-    game->get_bomber(Player::Black);
-  }
-
-  auto movemaker = std::make_unique<MoveFactory>(); // validates move inputs
-
-  game->show(char_mode);  // show initial state
-
-  // main loop:
+void play(std::shared_ptr<Game> game, std::shared_ptr<MoveFactory> movemaker, bool char_mode) {
+  bool beirut = game->beirut_mode();
   std::string input;
 
   while (std::getline(std::cin, input)) {
@@ -123,6 +107,32 @@ int main(int argc, char **argv) {
     };
 
     game->show(char_mode);
+  }
+}
+
+int main(int argc, char **argv) {
+
+  // Set gamemode & other setup:
+  bool char_mode = false; // by default, try to show board with unicode piece chars
+  bool beirut = (argc > 1 && std::string(argv[1]) == "beirut");
+  auto game = std::make_shared<Game>();
+
+  if (beirut) {
+    game->enable_beirut_mode();
+    game->get_bomber(Player::White);
+    game->get_bomber(Player::Black);
+  }
+
+  auto movemaker = std::make_shared<MoveFactory>(); // validates move inputs
+
+  game->show(char_mode);  // show initial state
+
+  // main loop:
+  try {
+    play(game, movemaker, char_mode);
+  } catch (...) {
+    std::cout << "An issue has occurred, terminating...\n";
+    return EXIT_FAILURE;
   }
 
   return EXIT_SUCCESS;

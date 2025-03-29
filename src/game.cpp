@@ -107,10 +107,10 @@ void Game::print_board(bool char_view) const {
 void Game::show(bool char_view) const {
   // board, player status, commands & input prompt:
   this->print_board(char_view);
-  std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
-  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle "
-               "character mode\n";
-  std::cout << "\033[43m" << "Input>" << RESET_BG;
+  std::cout << (this->in_check(this->to_move()) ? "CHECK! " : "")
+            << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+            << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
+            << "\033[43m" << "Input>" << RESET_BG;
 }
 
 Player Game::to_move() const { return this->current_player_; }
@@ -319,9 +319,10 @@ void Game::print_moves(const std::string &input, const bool char_view) {
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
-  std::cout << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n";
-  std::cout << "Commands: (:n)ew game (:u)ndo (:q)uit (:t)oggle character mode\n";
-  std::cout << "\033[43m" << "Input>" << RESET_BG;
+  std::cout << (this->in_check(this->to_move()) ? "CHECK! " : "")
+            << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+            << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
+            << "\033[43m" << "Input>" << RESET_BG;
 }
 
 // Beirut-mode specifics
