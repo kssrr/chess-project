@@ -14,22 +14,22 @@
 #include "move.h"
 
 Piece::Piece(Player p, char c) : player_(p), carries_bomb_(false) {
-  this->rep_ = (this->player_ == Player::White) ? std::toupper(c) : std::tolower(c);
-  this->unicode_ = 0;
+  rep_ = (player_ == Player::White) ? std::toupper(c) : std::tolower(c);
+  unicode_ = 0;
 }
 
-char Piece::to_char() const { return this->rep_; }
+char Piece::to_char() const { return rep_; }
 
 std::string Piece::unicode() const {
   std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
-  return conv.to_bytes(this->unicode_);
+  return conv.to_bytes(unicode_);
 }
 
-Player Piece::owner() const { return this->player_; }
+Player Piece::owner() const { return player_; }
 
-bool Piece::carries_bomb() const { return this->carries_bomb_; }
+bool Piece::carries_bomb() const { return carries_bomb_; }
 
-void Piece::give_bomb() { this->carries_bomb_ = true; }
+void Piece::give_bomb() { carries_bomb_ = true; }
 
 Bishop::Bishop(Player p) : Piece(p, 'B') { unicode_ = 0x265D; }
 
@@ -71,7 +71,7 @@ bool Knight::valid(std::shared_ptr<Move> move, const Board &board) const {
 Pawn::Pawn(Player p) : Piece(p, 'P') { unicode_ = 0x265F; }
 
 bool Pawn::valid(std::shared_ptr<Move> move, const Board &board) const {
-  int direction = (this->owner() == Player::White) ? -1 : 1;
+  int direction = (owner() == Player::White) ? -1 : 1;
 
   Field from = move->from();
   Field to = move->to();
@@ -83,7 +83,7 @@ bool Pawn::valid(std::shared_ptr<Move> move, const Board &board) const {
   if (dx == 0 && dy == direction && !board[to.row][to.col]) return true;
 
   // double move forward (only from starting position):
-  int start_row = (this->owner() == Player::White) ? 6 : 1;
+  int start_row = (owner() == Player::White) ? 6 : 1;
   if (dx == 0 && dy == 2 * direction && from.row == start_row && !board[to.row][to.col] && move->unobstructed(board))
     return true;
 

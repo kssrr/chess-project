@@ -53,8 +53,10 @@ void play(std::shared_ptr<Game> game, std::shared_ptr<MoveFactory> movemaker, bo
 
     if (input == "boom") {
 
-      if (!beirut)
+      if (!beirut) {
+        show_prompt();
         continue;
+      }
 
       bool bomber_found = game->boom(game->to_move());
 

@@ -77,7 +77,7 @@ Game::Game(const std::string &input) {
   current_player_ = Player::White;  // white always starts, even when reading from file
 }
 
-Board Game::board() const { return this->state_; }
+Board Game::board() const { return state_; }
 
 void Game::print_board(bool char_view) const {
   const std::string cols = "    a  b  c  d  e  f  g  h   ";
@@ -88,7 +88,7 @@ void Game::print_board(bool char_view) const {
     std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
     for (size_t j = 0; j < 8; ++j) {
-      const auto &ptr = this->state_[i][j];
+      const auto &ptr = state_[i][j];
 
       std::cout << ((i + j) % 2 == 0 ? CYAN_BG : PINK_BG);
 
@@ -106,18 +106,18 @@ void Game::print_board(bool char_view) const {
 
 void Game::show(bool char_view) const {
   // board, player status, commands & input prompt:
-  this->print_board(char_view);
-  std::cout << (this->in_check(this->to_move()) ? "CHECK! " : "")
-            << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+  print_board(char_view);
+  std::cout << (in_check(to_move()) ? "CHECK! " : "")
+            << (to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
             << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
             << "\033[43m" << "Input>" << RESET_BG;
 }
 
-Player Game::to_move() const { return this->current_player_; }
+Player Game::to_move() const { return current_player_; }
 
 void Game::swap() {
-  this->current_player_ == Player::White ? this->current_player_ = Player::Black
-                                         : this->current_player_ = Player::White;
+  current_player_ == Player::White ? current_player_ = Player::Black
+                                         : current_player_ = Player::White;
 }
 
 void Game::make_move(std::shared_ptr<Move> move) {
@@ -126,13 +126,13 @@ void Game::make_move(std::shared_ptr<Move> move) {
   Field from = move->from();
   Field to = move->to();
 
-  this->state_[to.row][to.col] = this->state_[from.row][from.col];
-  this->state_[from.row][from.col] = nullptr;
+  state_[to.row][to.col] = state_[from.row][from.col];
+  state_[from.row][from.col] = nullptr;
 
   // handle promotion:
   if (move->is_promotion()) {
     auto piecemaker = std::make_unique<PieceFactory>();
-    this->state_[to.row][to.col] = piecemaker->make_piece(move->promote_to());
+    state_[to.row][to.col] = piecemaker->make_piece(move->promote_to());
   }
 }
 
@@ -298,11 +298,11 @@ void Game::print_moves(const std::string &input, const bool char_view) {
     std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
     for (size_t j = 0; j < 8; ++j) {
-      const auto &ptr = this->state_[i][j];
+      const auto &ptr = state_[i][j];
       bool occupied = ptr ? true : false;
       Field to(i, j);
       auto move = std::make_shared<Move>(piece_char, from, to, occupied);
-      bool valid = this->try_move(move);
+      bool valid = try_move(move);
 
       if (valid)
         std::cout << YELLOW_BG;
@@ -319,21 +319,21 @@ void Game::print_moves(const std::string &input, const bool char_view) {
     std::cout << RESET << ' ' << GREEN << 8 - i << '\n';
   }
   std::cout << GREEN << cols << RESET << '\n';
-  std::cout << (this->in_check(this->to_move()) ? "CHECK! " : "")
-            << (this->to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
+  std::cout << (in_check(to_move()) ? "CHECK! " : "")
+            << (to_move() == Player::White ? "White" : "Black") << "'s turn.\n"
             << "Commands: (:n)ew game (:u)ndo (:q)uit (:m)oves (:t)oggle character mode\n"
             << "\033[43m" << "Input>" << RESET_BG;
 }
 
 // Beirut-mode specifics
 
-bool Game::beirut_mode() const { return this->beirut_mode_; }
+bool Game::beirut_mode() const { return beirut_mode_; }
 
-void Game::enable_beirut_mode() { this->beirut_mode_ = true; }
+void Game::enable_beirut_mode() { beirut_mode_ = true; }
 
 void Game::get_bomber(Player p, bool char_view) const {
   // collect player inputs & give bombs to the pieces
-  this->print_board(char_view);
+  print_board(char_view);
 
   std::regex valid_regex(p == Player::White ? "^[BNPQR][a-h][1-2]$" : "^[bnpqr][a-h][7-8]$");  // no king allowed
   std::string input;
@@ -352,7 +352,7 @@ void Game::get_bomber(Player p, bool char_view) const {
     char piece_char = input[0];
     Field location(8 - (input[2] - '0'), input[1] - 'a');
 
-    auto ptr = this->state_[location.row][location.col];
+    auto ptr = state_[location.row][location.col];
 
     if (!ptr) {
       std::cout << "No piece at that location, try again\n>";
@@ -376,7 +376,7 @@ bool Game::boom(Player p) {
 
   for (int i = 0; i < 8; ++i) {
     for (int j = 0; j < 8; ++j) {
-      auto ptr = this->state_[i][j];
+      auto ptr = state_[i][j];
 
       if (!ptr) continue;
 
@@ -395,17 +395,17 @@ bool Game::boom(Player p) {
     return found;
   }
 
-  this->history_.push(this->state_);
+  history_.push(state_);
 
   // "detonate bomb"; delete 3x3 window around carrier:
   for (int i = std::max(0, brow - 1); i <= std::min(7, brow + 1); ++i) {
     for (int j = std::max(0, bcol - 1); j <= std::min(7, bcol + 1); ++j) {
-      this->state_[i][j] = nullptr;
+      state_[i][j] = nullptr;
     }
   }
 
   // trigger explosion effect:
-  this->explosion_effect(brow, bcol);
+  explosion_effect(brow, bcol);
   return found;
 };
 
@@ -419,7 +419,7 @@ void Game::explosion_effect(int r, int c, bool char_view) const {
     std::cout << GREEN << " " << 8 - i << RESET << ' ';
 
     for (int j = 0; j < 8; ++j) {
-      const auto &ptr = this->state_[i][j];
+      const auto &ptr = state_[i][j];
 
       // if within radius make red, else make yellow
       // TODO: there is a small bug here, because r+/-1 or c +/- 1 might be out
@@ -440,5 +440,5 @@ void Game::explosion_effect(int r, int c, bool char_view) const {
 
   // show for half a second then delegate back & show normal board again:
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
-  this->print_board();
+  print_board();
 };
