@@ -1,7 +1,11 @@
-/* `Move` stores information about a pseudo-valid (valid format) move
-   & allows easy access for some checks, and to generate hypothetical moves
-   for threat checks. `MoveFactory` validates the move format prior to parsing
-   so that we never attempt to parse invalidly formatted moves. */
+//===----------------------------------------------------------------------===//
+//
+// `Move` stores information about a pseudo-valid (valid format) move
+// & allows easy access for some checks, and to generate hypothetical moves
+// for threat checks. `MoveFactory` validates the move format prior to parsing
+// so that we never attempt to parse invalidly formatted moves.
+//
+//===----------------------------------------------------------------------===//
 
 #include "move.h"
 
@@ -13,7 +17,7 @@
 // Move
 
 // from string input
-Move::Move(const std::string& input)
+Move::Move(const std::string &input)
     : piece_char_(input[0]),
       captures_(input[3] == 'x'),
       from_(8 - (input[2] - '0'), input[1] - 'a'),
@@ -37,7 +41,7 @@ Field Move::from() const { return from_; }
 
 Field Move::to() const { return to_; }
 
-bool Move::unobstructed(const Board& board) const {
+bool Move::unobstructed(const Board &board) const {
   int o_row = from_.row;
   int o_col = from_.col;
   int d_row = to_.row;
@@ -62,6 +66,6 @@ bool Move::unobstructed(const Board& board) const {
 
 MoveFactory::MoveFactory() : move_format_("^[BKNPQRbknpqr][a-h][1-8]x?[a-h][1-8](=[BKNPQRbknpqr])?$") {}
 
-bool MoveFactory::valid(const std::string& input) const { return std::regex_match(input, move_format_); }
+bool MoveFactory::valid(const std::string &input) const { return std::regex_match(input, move_format_); }
 
-std::shared_ptr<Move> MoveFactory::parse_move(const std::string& input) const { return std::make_shared<Move>(input); }
+std::shared_ptr<Move> MoveFactory::parse_move(const std::string &input) const { return std::make_shared<Move>(input); }
