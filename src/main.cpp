@@ -1,3 +1,14 @@
+//===----------------------------------------------------------------------===//
+//
+// This is the main function that runs the actual game loop. The game loop
+// is layed out in `play` and reads from `std::cin`. Basically, we first check
+// whether an input matches a known command. If not, we try to validate &
+// parse it as move. If not, we keep trying to get a valid/recognized input
+// from the player. After a valid move has been made, it's the other player's
+// turn.
+//
+//===----------------------------------------------------------------------===//
+
 #include <fstream>
 #include <iostream>
 #include <memory>

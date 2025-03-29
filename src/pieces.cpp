@@ -1,8 +1,12 @@
-/* All pieces inherit from the `Piece`-class and only differ in their character
-   representation & move validator (as every piece moves differently). The
-   `PieceFactory` can create instances of pieces (or rather pointers to
-   instances of pieces) from their character representation (e.g. when parsing a
-   move input). */
+//===----------------------------------------------------------------------===//
+//
+// All pieces inherit from the `Piece`-class and only differ in their
+// representation & move validator (as every piece moves differently). The
+// `PieceFactory` can create instances of pieces (or rather pointers to
+// instances of pieces) from their character representation (e.g. when parsing
+// a move input).
+//
+//===----------------------------------------------------------------------===//
 
 #include "pieces.h"
 

@@ -1,11 +1,10 @@
-/* The `Game` class is the heart and soul (and basically half of the code)
-   of this program. It can start a new game, or read board status from a file.
-   The actual game logic is handled in this class. */
-
-// TODO: adapt checkmate to understand checkmate by blowing up
-// for example, in `boom` check for the king in the radius &
-// if he blows up invalidate the king's position (-1, -1)?
-// Then check if a kings position is valid in check & checkmate?
+//===----------------------------------------------------------------------===//
+//
+// The `Game`-class handles most of the actual game logic and ties together
+// all the other pieces. It also validates moves *substantively* in the 
+// context of the current game state.
+//
+//===----------------------------------------------------------------------===//
 
 #include "game.h"
 

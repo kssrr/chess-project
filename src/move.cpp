@@ -1,7 +1,11 @@
-/* `Move` stores information about a pseudo-valid (valid format) move
-   & allows easy access for some checks, and to generate hypothetical moves
-   for threat checks. `MoveFactory` validates the move format prior to parsing
-   so that we never attempt to parse invalidly formatted moves. */
+//===----------------------------------------------------------------------===//
+//
+// `Move` stores information about a pseudo-valid (valid format) move
+// & allows easy access for some checks, and to generate hypothetical moves
+// for threat checks. `MoveFactory` validates the move format prior to parsing
+// so that we never attempt to parse invalidly formatted moves.
+//
+//===----------------------------------------------------------------------===//
 
 #include "move.h"
 
