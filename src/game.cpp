@@ -368,7 +368,7 @@ void Game::get_bomber(Player p, bool char_view) const {
   }
 }
 
-void Game::boom(Player p) {
+bool Game::boom(Player p) {
   // try to find player's bomb carrier:
   bool found = false;
   int brow, bcol;
@@ -391,7 +391,7 @@ void Game::boom(Player p) {
   // if not found, print message to stdout and exit function.
   if (!found) {
     std::cout << "No bomb carrier for player " << (p == Player::White ? "white" : "black") << '\n';
-    return;
+    return found;
   }
 
   // "detonate bomb"; delete 3x3 window around carrier:
@@ -403,6 +403,7 @@ void Game::boom(Player p) {
 
   // trigger explosion effect:
   this->explosion_effect(brow, bcol);
+  return found;
 };
 
 // basically print_board with different colors:

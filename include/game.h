@@ -46,6 +46,6 @@ class Game {
   void enable_beirut_mode();
   void get_bomber(Player p, bool char_view = false) const;
   // ^ view mode necessary because we show the board for picking a bomber
-  void boom(Player p);
+  bool boom(Player p);
   void explosion_effect(int r, int c, bool char_view = false) const;
 };
